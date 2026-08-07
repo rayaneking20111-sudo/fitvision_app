@@ -65,7 +65,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 }
 
-// ------------------- 1. WORKOUTS SCREEN WITH ANIMATIONS -------------------
+// ------------------- 1. WORKOUTS SCREEN -------------------
 class WorkoutsScreen extends StatelessWidget {
   const WorkoutsScreen({super.key});
 
@@ -136,7 +136,7 @@ class WorkoutsScreen extends StatelessWidget {
   }
 }
 
-// ------------------- 2. AI FOOD SCANNER SCREEN -------------------
+// ------------------- 2. AI FOOD SCANNER -------------------
 class FoodAiScannerScreen extends StatelessWidget {
   const FoodAiScannerScreen({super.key});
 
@@ -156,14 +156,14 @@ class FoodAiScannerScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.redAccent.withOpacity(0.5)),
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(Icons.add_a_photo, size: 60, color: Colors.redAccent),
                   SizedBox(height: 12),
                   Text('Take or Upload Food Photo', style: TextStyle(color: Colors.white, fontSize: 16)),
                   SizedBox(height: 4),
-                  Text('AI will instantly calculate Calories, Protein & Vitamins', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text('AI will calculate Calories, Protein & Vitamins', style: TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
             ),
@@ -186,7 +186,7 @@ class FoodAiScannerScreen extends StatelessWidget {
   }
 }
 
-// ------------------- 3. SLEEP TRACKER SCREEN -------------------
+// ------------------- 3. SLEEP TRACKER -------------------
 class SleepTrackerScreen extends StatelessWidget {
   const SleepTrackerScreen({super.key});
 
@@ -226,9 +226,24 @@ class SleepTrackerScreen extends StatelessWidget {
   }
 }
 
-// ------------------- 4. PROFILE SCREEN (FIXED BUTTON TEXT) -------------------
-class ProfileScreen extends StatelessWidget {
+// ------------------- 4. PROFILE SCREEN -------------------
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _weightController = TextEditingController(text: '52');
+  final TextEditingController _heightController = TextEditingController(text: '169');
+
+  @override
+  void dispose() {
+    _weightController.dispose();
+    _heightController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,17 +261,16 @@ class ProfileScreen extends StatelessWidget {
             ),
             const Divider(color: Colors.grey),
             const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Weight (kg)', border: OutlineInputBorder()),
-              controller: TextEditingController(text: '52'),
+            TextField(
+              controller: _weightController,
+              decoration: const InputDecoration(labelText: 'Weight (kg)', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 16),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Height (cm)', border: OutlineInputBorder()),
-              controller: TextEditingController(text: '169'),
+            TextField(
+              controller: _heightController,
+              decoration: const InputDecoration(labelText: 'Height (cm)', border: OutlineInputBorder()),
             ),
             const SizedBox(height: 24),
-            // FIXED BUTTON WITH VISIBLE TEXT
             ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(

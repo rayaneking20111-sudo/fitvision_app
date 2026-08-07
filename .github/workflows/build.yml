@@ -1,4 +1,4 @@
-name: Build Android App Bundle
+name: Build Android App & Release
 
 on:
   push:
@@ -21,7 +21,13 @@ jobs:
 
       - run: flutter create . --platforms android --org com.rgapps --project-name fitvision_app
       - run: flutter pub get
+      - run: flutter build apk --release
       - run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitvision-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
       - uses: actions/upload-artifact@v4
         with:

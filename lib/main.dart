@@ -13,9 +13,10 @@ class FitVisionApp extends StatelessWidget {
       title: 'FitVision AI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: const Color(0xFF121212),
         brightness: Brightness.dark,
+        primaryColor: Colors.blueAccent,
+        scaffoldBackgroundColor: const Color(0xFF0F0F0F),
+        fontFamily: 'Roboto',
       ),
       home: const OnboardingScreen(),
     );
@@ -33,95 +34,156 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, String>> _pages = [
+  final List<Map<String, String>> _onboardingData = [
     {
-      'title': 'Welcome to FitVision AI',
-      'subtitle': 'Your intelligent companion for workout tracking and fitness goals.',
+      'title': 'Smart AI Tracking',
+      'subtitle': 'Transform your fitness journey with advanced artificial intelligence monitoring.',
+      'icon': 'auto_awesome',
     },
     {
-      'title': 'Custom Workouts',
-      'subtitle': 'Explore targeted muscle exercises designed for maximum results.',
+      'title': 'Pro Workouts',
+      'subtitle': 'Access high-performance routines tailored for every muscle group.',
+      'icon': 'fitness_center',
     },
     {
-      'title': 'Easy Gym Bookings',
-      'subtitle': 'Locate nearby fitness centers and reserve your spot instantly.',
+      'title': 'Global Gym Access',
+      'subtitle': 'Find, book, and train at the best fitness centers in your city.',
+      'icon': 'explore',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) => setState(() => _currentPage = index),
-                itemCount: _pages.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          index == 0
-                              ? Icons.auto_awesome
-                              : index == 1
-                                  ? Icons.fitness_center
-                                  : Icons.location_on,
-                          size: 100,
-                          color: Colors.blueAccent,
-                        ),
-                        const SizedBox(height: 32),
-                        Text(
-                          _pages[index]['title']!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 26, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          _pages[index]['subtitle']!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.grey),
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) => setState(() => _currentPage = index),
+            itemCount: _onboardingData.length,
+            itemBuilder: (context, index) => OnboardingContent(
+              title: _onboardingData[index]['title']!,
+              subtitle: _onboardingData[index]['subtitle']!,
+              iconName: _onboardingData[index]['icon']!,
+            ),
+          ),
+          Positioned(
+            bottom: 60,
+            left: 24,
+            right: 24,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _onboardingData.length,
+                    (index) => buildDot(index),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                GestureDetector(
+                  onTap: () {
+                    if (_currentPage == _onboardingData.length - 1) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+                      );
+                    } else {
+                      _pageController.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Colors.blueAccent, Colors.cyanAccent],
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blueAccent.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  backgroundColor: Colors.blueAccent,
+                    child: Center(
+                      child: Text(
+                        _currentPage == _onboardingData.length - 1 ? "GET STARTED" : "CONTINUE",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                onPressed: () {
-                  if (_currentPage < _pages.length - 1) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn,
-                    );
-                  } else {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MainNavigationScreen()),
-                    );
-                  }
-                },
-                child: Text(_currentPage == _pages.length - 1
-                    ? 'Get Started'
-                    : 'Next'),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDot(int index) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      margin: const EdgeInsets.only(right: 8),
+      height: 8,
+      width: _currentPage == index ? 24 : 8,
+      decoration: BoxDecoration(
+        color: _currentPage == index ? Colors.blueAccent : Colors.grey.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(5),
+      ),
+    );
+  }
+}
+
+class OnboardingContent extends StatelessWidget {
+  final String title, subtitle, iconName;
+  const OnboardingContent({Key? key, required this.title, required this.subtitle, required this.iconName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    IconData displayIcon;
+    switch (iconName) {
+      case 'auto_awesome': displayIcon = Icons.auto_awesome; break;
+      case 'fitness_center': displayIcon = Icons.fitness_center; break;
+      case 'explore': displayIcon = Icons.explore; break;
+      default: displayIcon = Icons.help_outline;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(40.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blueAccent.withOpacity(0.1),
+            ),
+            child: Icon(displayIcon, size: 120, color: Colors.blueAccent),
+          ),
+          const SizedBox(height: 60),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, color: Colors.grey, height: 1.5),
+          ),
+        ],
       ),
     );
   }
@@ -129,20 +191,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({Key? key}) : super(key: key);
-
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
-
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    BookingsScreen(),
-    ProfileScreen(),
-  ];
-
+  final List<Widget> _screens = const [HomeScreen(), BookingsScreen(), ProfileScreen()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,15 +205,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.grey,
         onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.fitness_center), label: 'Workouts'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), label: 'Bookings'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.bolt), label: 'Workouts'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Bookings'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Profile'),
         ],
       ),
     );
@@ -167,46 +218,25 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  final List<Map<String, String>> muscles = const [
-    {'name': 'Abs', 'subtitle': 'Core strength & Stability'},
-    {'name': 'Chest', 'subtitle': 'Pectoral development'},
-    {'name': 'Back', 'subtitle': 'Lats & Upper back'},
-    {'name': 'Arms', 'subtitle': 'Biceps & Triceps'},
-    {'name': 'Legs', 'subtitle': 'Quadriceps & Calves'},
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<String> muscles = ['Abs', 'Chest', 'Back', 'Arms', 'Legs'];
     return Scaffold(
-      appBar: AppBar(title: const Text('FitVision AI - Workouts')),
+      appBar: AppBar(title: const Text('WORKOUTS'), elevation: 0),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         itemCount: muscles.length,
-        itemBuilder: (context, index) {
-          final muscle = muscles[index];
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ListTile(
-              leading: const Icon(Icons.fitness_center, color: Colors.blueAccent),
-              title: Text(
-                muscle['name']!,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(muscle['subtitle']!),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MuscleDetailScreen(muscleName: muscle['name']!),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+        itemBuilder: (context, index) => Card(
+          margin: const EdgeInsets.only(bottom: 15),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(15),
+            leading: const CircleAvatar(backgroundColor: Colors.blueAccent, child: Icon(Icons.fitness_center, color: Colors.white)),
+            title: Text(muscles[index], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MuscleDetailScreen(muscleName: muscles[index]))),
+          ),
+        ),
       ),
     );
   }
@@ -214,175 +244,45 @@ class HomeScreen extends StatelessWidget {
 
 class MuscleDetailScreen extends StatelessWidget {
   final String muscleName;
-
-  const MuscleDetailScreen({Key? key, required this.muscleName})
-      : super(key: key);
-
+  const MuscleDetailScreen({Key? key, required this.muscleName}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('$muscleName Workouts')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.fitness_center, size: 80, color: Colors.blueAccent),
-            const SizedBox(height: 16),
-            Text(
-              'Selected Muscle Group: $muscleName',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text('AI Exercise Recommendations Loading...'),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: Text(muscleName)),
+      body: Center(child: Text('Exercises for $muscleName coming soon...', style: const TextStyle(fontSize: 18))),
     );
   }
 }
 
 class BookingsScreen extends StatelessWidget {
   const BookingsScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Gym Bookings')),
-      body: const Center(
-        child: Text(
-          'No active reservations.\nTap "+" to search and book a gym.',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey, fontSize: 16),
-        ),
-      ),
+      appBar: AppBar(title: const Text('BOOKINGS')),
       floatingActionButton: FloatingActionButton(
+        onPressed: () {},
         backgroundColor: Colors.blueAccent,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const GymSearchScreen()),
-          );
-        },
         child: const Icon(Icons.add),
       ),
+      body: const Center(child: Text('No active reservations', style: TextStyle(color: Colors.grey))),
     );
   }
 }
 
-class GymSearchScreen extends StatelessWidget {
-  const GymSearchScreen({Key? key}) : super(key: key);
-
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search & Book Gyms')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(title: const Text('PROFILE')),
+      body: const Padding(
+        padding: EdgeInsets.all(20.0),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(
-                labelText: 'Search Gym Name or City',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                children: [
-                  ListTile(
-                    title: const Text('Power Gym Center'),
-                    subtitle: const Text('Downtown - Open 24/7'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Gym Reserved Successfully!')),
-                        );
-                      },
-                      child: const Text('Book'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  String _selectedGoal = 'Weight Loss';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profile & Target Goals')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            TextField(
-              controller: _weightController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Current Weight (kg)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _heightController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Height (cm)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedGoal,
-              decoration: const InputDecoration(
-                labelText: 'Fitness Goal',
-                border: OutlineInputBorder(),
-              ),
-              items: <String>[
-                'Weight Loss',
-                'Muscle Gain',
-                'Endurance',
-                'Maintenance'
-              ].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (newValue) => setState(() => _selectedGoal = newValue!),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                padding: const EdgeInsets.all(16),
-              ),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile Goals Saved Successfully!')),
-                );
-              },
-              child: const Text('Save Profile'),
-            ),
+            TextField(decoration: InputDecoration(labelText: 'Weight (kg)', border: OutlineInputBorder())),
+            SizedBox(height: 20),
+            TextField(decoration: InputDecoration(labelText: 'Goal', border: OutlineInputBorder())),
           ],
         ),
       ),

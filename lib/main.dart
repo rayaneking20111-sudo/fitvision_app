@@ -1,353 +1,390 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const FitVisionGlobalApp());
+  runApp(const FitVisionApp());
 }
 
-class AppTranslations {
-  static const Map<String, Map<String, String>> _localizedValues = {
-    'ar': {
-      'app_title': 'فيت فيجن | Rg apps',
-      'profile': 'الملف والهدف',
-      'workouts': 'العضلات والتمارين',
-      'ai_scanner': 'مسح الوجبة',
-      'booking': 'الحجوزات',
-      'wearables': 'الأجهزة',
-      'select_muscle': 'اختر عضلة الجسم للبدء بالتمرين',
-      'abs': 'عضلات البطن (Abs)',
-      'legs': 'الأرجل والفخذ (Legs)',
-      'chest': 'الصدر (Chest)',
-      'back': 'الظهر (Back)',
-      'shoulders': 'الأكتاف (Shoulders)',
-      'arms': 'الذراعين (Arms)',
-      'scan_button': 'تصوير الوجبة وتحليل الماكروز',
-      'dream_target': 'هدف الجسم المثالي (Dream Body)',
-      'bmr_calc': 'معدل الحرق الأساسي (BMR)',
-      'book_now': 'حجز الآن',
-      'sync_watch': 'مزامنة الساعة الذكية',
-    },
-    'en': {
-      'app_title': 'FitVision | Rg apps',
-      'profile': 'Profile & Goal',
-      'workouts': 'Workouts',
-      'ai_scanner': 'AI Scanner',
-      'booking': 'Booking',
-      'wearables': 'Wearables',
-      'select_muscle': 'Select Target Muscle Group',
-      'abs': 'Abs',
-      'legs': 'Legs',
-      'chest': 'Chest',
-      'back': 'Back',
-      'shoulders': 'Shoulders',
-      'arms': 'Arms',
-      'scan_button': 'Snap Meal & Analyze Macros',
-      'dream_target': 'Dream Body Target',
-      'bmr_calc': 'Basal Metabolic Rate (BMR)',
-      'book_now': 'Book Now',
-      'sync_watch': 'Sync Smartwatch',
-    },
-    'fr': {
-      'app_title': 'FitVision | Rg apps',
-      'profile': 'Profil et Objectif',
-      'workouts': 'Entraînements',
-      'ai_scanner': 'Scanner IA',
-      'booking': 'Réservation',
-      'wearables': 'Appareils',
-      'select_muscle': 'Sélectionnez le groupe musculaire',
-      'abs': 'Abdominaux',
-      'legs': 'Jambes',
-      'chest': 'Poitrine',
-      'back': 'Dos',
-      'shoulders': 'Épaules',
-      'arms': 'Bras',
-      'scan_button': 'Prendre une photo du repas',
-      'dream_target': 'Corps de Rêve',
-      'bmr_calc': 'Taux Métabolique de Base (BMR)',
-      'book_now': 'Réserver',
-      'sync_watch': 'Synchroniser la montre',
-    },
-    'es': {
-      'app_title': 'FitVision | Rg apps',
-      'profile': 'Perfil y Objetivo',
-      'workouts': 'Entrenamientos',
-      'ai_scanner': 'Escáner IA',
-      'booking': 'Reservas',
-      'wearables': 'Dispositivos',
-      'select_muscle': 'Selecciona el grupo muscular',
-      'abs': 'Abdominales',
-      'legs': 'Piernas',
-      'chest': 'Pecho',
-      'back': 'Espalda',
-      'shoulders': 'Hombros',
-      'arms': 'Brazos',
-      'scan_button': 'Escanear comida y macros',
-      'dream_target': 'Cuerpo Ideal Target',
-      'bmr_calc': 'Tasa Metabólica Basal (BMR)',
-      'book_now': 'Reservar',
-      'sync_watch': 'Sincronizar reloj',
-    }
-  };
-
-  static String getText(String languageCode, String key) {
-    return _localizedValues[languageCode]?[key] ?? _localizedValues['en']![key] ?? key;
-  }
-}
-
-class FitVisionGlobalApp extends StatefulWidget {
-  const FitVisionGlobalApp({Key? key}) : super(key: key);
-
-  @override
-  State<FitVisionGlobalApp> createState() => _FitVisionGlobalAppState();
-}
-
-class _FitVisionGlobalAppState extends State<FitVisionGlobalApp> {
-  String _currentLang = 'ar';
-
-  void _changeLanguage(String langCode) {
-    setState(() {
-      _currentLang = langCode;
-    });
-  }
+class FitVisionApp extends StatelessWidget {
+  const FitVisionApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FitVision | Rg apps',
+      title: 'FitVision AI',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        primaryColor: const Color(0xFFA3E635),
-        scaffoldBackgroundColor: const Color(0xFF0F172A),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFA3E635),
-          secondary: Color(0xFF38BDF8),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        brightness: Brightness.dark,
+      ),
+      home: const OnboardingScreen(),
+    );
+  }
+}
+
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  final List<Map<String, String>> _pages = [
+    {
+      'title': 'Welcome to FitVision AI',
+      'subtitle': 'Your intelligent companion for workout tracking and fitness goals.',
+    },
+    {
+      'title': 'Custom Workouts',
+      'subtitle': 'Explore targeted muscle exercises designed for maximum results.',
+    },
+    {
+      'title': 'Easy Gym Bookings',
+      'subtitle': 'Locate nearby fitness centers and reserve your spot instantly.',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                itemCount: _pages.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          index == 0
+                              ? Icons.auto_awesome
+                              : index == 1
+                                  ? Icons.fitness_center
+                                  : Icons.location_on,
+                          size: 100,
+                          color: Colors.blueAccent,
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          _pages[index]['title']!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 26, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _pages[index]['subtitle']!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  backgroundColor: Colors.blueAccent,
+                ),
+                onPressed: () {
+                  if (_currentPage < _pages.length - 1) {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                    );
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MainNavigationScreen()),
+                    );
+                  }
+                },
+                child: Text(_currentPage == _pages.length - 1
+                    ? 'Get Started'
+                    : 'Next'),
+              ),
+            ),
+          ],
         ),
       ),
-      home: MainDashboardScreen(
-        currentLang: _currentLang,
-        onLangChange: _changeLanguage,
-      ),
     );
   }
 }
 
-class MainDashboardScreen extends StatefulWidget {
-  final String currentLang;
-  final Function(String) onLangChange;
-
-  const MainDashboardScreen({
-    Key? key,
-    required this.currentLang,
-    required this.onLangChange,
-  }) : super(key: key);
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainDashboardScreen> createState() => _MainDashboardScreenState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainDashboardScreenState extends State<MainDashboardScreen> {
-  int _currentIndex = 0;
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = const [
+    HomeScreen(),
+    BookingsScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final screens = [
-      ProfileAndDreamGoalWidget(lang: widget.currentLang),
-      MuscleWorkoutsWidget(lang: widget.currentLang),
-      AIFoodScannerWidget(lang: widget.currentLang),
-      GymBookingWidget(lang: widget.currentLang),
-      WearablesWidget(lang: widget.currentLang),
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppTranslations.getText(widget.currentLang, 'app_title')),
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.g_translate, color: Color(0xFFA3E635)),
-            onSelected: widget.onLangChange,
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'ar', child: Text('العربية')),
-              PopupMenuItem(value: 'en', child: Text('English')),
-              PopupMenuItem(value: 'fr', child: Text('Français')),
-              PopupMenuItem(value: 'es', child: Text('Español')),
-            ],
-          ),
-        ],
-      ),
-      body: screens[_currentIndex],
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: const Color(0xFFA3E635),
-        unselectedItemColor: const Color(0xFF64748B),
-        backgroundColor: const Color(0xFF1E293B),
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: [
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blueAccent,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        items: const [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
-            label: AppTranslations.getText(widget.currentLang, 'profile'),
-          ),
+              icon: Icon(Icons.fitness_center), label: 'Workouts'),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.fitness_center),
-            label: AppTranslations.getText(widget.currentLang, 'workouts'),
-          ),
+              icon: Icon(Icons.calendar_today), label: 'Bookings'),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.camera_alt),
-            label: AppTranslations.getText(widget.currentLang, 'ai_scanner'),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.calendar_month),
-            label: AppTranslations.getText(widget.currentLang, 'booking'),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.watch),
-            label: AppTranslations.getText(widget.currentLang, 'wearables'),
-          ),
+              icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
   }
 }
 
-class MuscleWorkoutsWidget extends StatelessWidget {
-  final String lang;
-  const MuscleWorkoutsWidget({Key? key, required this.lang}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  final List<Map<String, String>> muscles = const [
+    {'name': 'Abs', 'subtitle': 'Core strength & Stability'},
+    {'name': 'Chest', 'subtitle': 'Pectoral development'},
+    {'name': 'Back', 'subtitle': 'Lats & Upper back'},
+    {'name': 'Arms', 'subtitle': 'Biceps & Triceps'},
+    {'name': 'Legs', 'subtitle': 'Quadriceps & Calves'},
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final muscleGroups = [
-      {'key': 'abs', 'icon': Icons.fitness_center, 'color': const Color(0xFFF59E0B)},
-      {'key': 'legs', 'icon': Icons.directions_run, 'color': const Color(0xFF38BDF8)},
-      {'key': 'chest', 'icon': Icons.sports_gymnastics, 'color': const Color(0xFFEF4444)},
-      {'key': 'back', 'icon': Icons.accessibility_new, 'color': const Color(0xFF10B981)},
-      {'key': 'shoulders', 'icon': Icons.accessibility, 'color': const Color(0xFF8B5CF6)},
-      {'key': 'arms', 'icon': Icons.sports_mma, 'color': const Color(0xFFEC4899)},
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppTranslations.getText(lang, 'select_muscle'),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFA3E635)),
-          ),
-          const SizedBox(height: 15),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.1,
+    return Scaffold(
+      appBar: AppBar(title: const Text('FitVision AI - Workouts')),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: muscles.length,
+        itemBuilder: (context, index) {
+          final muscle = muscles[index];
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: const Icon(Icons.fitness_center, color: Colors.blueAccent),
+              title: Text(
+                muscle['name']!,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              itemCount: muscleGroups.length,
-              itemBuilder: (context, index) {
-                final item = muscleGroups[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E293B),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: item['color'] as Color, width: 1.5),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(item['icon'] as IconData, size: 40, color: item['color'] as Color),
-                      const SizedBox(height: 10),
-                      Text(
-                        AppTranslations.getText(lang, item['key'] as String),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+              subtitle: Text(muscle['subtitle']!),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MuscleDetailScreen(muscleName: muscle['name']!),
                   ),
                 );
               },
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
 }
 
-class ProfileAndDreamGoalWidget extends StatelessWidget {
-  final String lang;
-  const ProfileAndDreamGoalWidget({Key? key, required this.lang}) : super(key: key);
+class MuscleDetailScreen extends StatelessWidget {
+  final String muscleName;
+
+  const MuscleDetailScreen({Key? key, required this.muscleName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppTranslations.getText(lang, 'dream_target'),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFA3E635)),
-          ),
-          const SizedBox(height: 10),
-          Card(
-            color: const Color(0xFF1E293B),
-            child: ListTile(
-              leading: const Icon(Icons.star, color: Color(0xFFA3E635)),
-              title: Text(AppTranslations.getText(lang, 'bmr_calc') + ": 1,850 kcal"),
-              subtitle: const Text("Rg apps Target Physique Tracker"),
+    return Scaffold(
+      appBar: AppBar(title: Text('$muscleName Workouts')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.fitness_center, size: 80, color: Colors.blueAccent),
+            const SizedBox(height: 16),
+            Text(
+              'Selected Muscle Group: $muscleName',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AIFoodScannerWidget extends StatelessWidget {
-  final String lang;
-  const AIFoodScannerWidget({Key? key, required this.lang}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton.icon(
-        onPressed: () {},
-        icon: const Icon(Icons.camera_alt),
-        label: Text(AppTranslations.getText(lang, 'scan_button')),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFA3E635),
-          foregroundColor: Colors.black,
+            const SizedBox(height: 8),
+            const Text('AI Exercise Recommendations Loading...'),
+          ],
         ),
       ),
     );
   }
 }
 
-class GymBookingWidget extends StatelessWidget {
-  final String lang;
-  const GymBookingWidget({Key? key, required this.lang}) : super(key: key);
+class BookingsScreen extends StatelessWidget {
+  const BookingsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        AppTranslations.getText(lang, 'booking'),
-        style: const TextStyle(fontSize: 18, color: Color(0xFF38BDF8)),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Gym Bookings')),
+      body: const Center(
+        child: Text(
+          'No active reservations.\nTap "+" to search and book a gym.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const GymSearchScreen()),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-class WearablesWidget extends StatelessWidget {
-  final String lang;
-  const WearablesWidget({Key? key, required this.lang}) : super(key: key);
+class GymSearchScreen extends StatelessWidget {
+  const GymSearchScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF38BDF8)),
-        child: Text(AppTranslations.getText(lang, 'sync_watch')),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Search & Book Gyms')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const TextField(
+              decoration: InputDecoration(
+                labelText: 'Search Gym Name or City',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: const Text('Power Gym Center'),
+                    subtitle: const Text('Downtown - Open 24/7'),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Gym Reserved Successfully!')),
+                        );
+                      },
+                      child: const Text('Book'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  String _selectedGoal = 'Weight Loss';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile & Target Goals')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            TextField(
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Current Weight (kg)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _heightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Height (cm)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: _selectedGoal,
+              decoration: const InputDecoration(
+                labelText: 'Fitness Goal',
+                border: OutlineInputBorder(),
+              ),
+              items: <String>[
+                'Weight Loss',
+                'Muscle Gain',
+                'Endurance',
+                'Maintenance'
+              ].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) => setState(() => _selectedGoal = newValue!),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                padding: const EdgeInsets.all(16),
+              ),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profile Goals Saved Successfully!')),
+                );
+              },
+              child: const Text('Save Profile'),
+            ),
+          ],
+        ),
       ),
     );
   }
